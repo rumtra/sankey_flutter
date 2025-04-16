@@ -61,31 +61,9 @@ For a complete working example with interactivity and layout computation, please
 For detailed API documentation, please review the inline comments in the source code and visit the package page on pub.dev.
 
 ## Contributing
-Contributions are welcome! Please review our `CONTRIBUTING.md` file for more details on how to get started, including testing procedures and coding standards.
+Contributions are welcome!! Your contributions help improve the package and benefit the entire Flutter community. The package strives to closely mirror the output of d3-sankey to ensure familiarity and reliability.
+
+Thank you for contributing to Sankey Flutter!
 
 ## License
 This project is licensed under the `BSD-3-Clause` License.
-
----
-
-## CONTRIBUTING.md
-
-### Contributing to Sankey Flutter
-
-Thank you for your interest in contributing to Sankey Flutter! Your contributions help improve the package and benefit the entire Flutter community. The package strives to closely mirror the output of d3-sankey to ensure familiarity and reliability.
-
-We welcome all contributions—from code improvements to documentation fixes.
-
-#### Golden Tests and Layout Tolerance
-
-This package uses fuzzy golden tests to validate the fidelity of the Sankey layout. The tests are designed to be resilient to minor floating-point differences.
-
----
-
-## Getting Started
-* Fork the Repository: Start by forking the project on GitHub.
-* Clone Your Fork: Clone the fork locally and set up your development environment.
-* Run the Tests: Make sure all tests pass by running:
-* Submit Pull Requests: Follow the guidelines and submit your changes via pull requests.
-
-Thank you for contributing to Sankey Flutter!
