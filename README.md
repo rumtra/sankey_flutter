@@ -12,6 +12,8 @@ Sankey Flutter is a Flutter package for rendering beautiful and interactive Sank
 - **Interactivity:** Easily extendible for adding tap, hover, or animation effects.
 - **Open Source:** Fully available for modification and extension.
 
+![Sankey Diagram Example](doc/sankey_example.png)
+
 ## Installation
 
 Add the following dependency to your `pubspec.yaml` file:
