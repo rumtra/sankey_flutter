@@ -1,7 +1,10 @@
 name: sankey_flutter
-description: A Flutter package for rendering beautiful and interactive Sankey diagrams.
+description: About Flutter package for Sankey diagrams (flow charts).
 version: 0.0.1
-homepage: https://github.com/yourusername/sankey_flutter
+homepage: https://github.com/Jason-Gregoire/sankey_flutter
+repository: https://github.com/Jason-Gregoire/sankey_flutter
+issue_tracker: https://github.com/Jason-Gregoire/sankey_flutter/issues
+
 environment:
   sdk: ">=2.17.0 <3.0.0"
 
