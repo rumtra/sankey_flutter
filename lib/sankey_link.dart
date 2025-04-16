@@ -1,8 +1,6 @@
 // lib/sankey_link.dart
 
-import 'sankey_node.dart';
-
-/// A link (flow) between two nodes in the Sankey diagram.
+/// A link (flow) between two nodes in the Sankey diagram
 class SankeyLink {
   dynamic source; // Resolved SankeyNode
   dynamic target; // Resolved SankeyNode

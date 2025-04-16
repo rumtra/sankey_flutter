@@ -1,7 +1,6 @@
 // example/main.dart
 
 import 'package:flutter/material.dart';
-import 'package:sankey_flutter/sankey.dart';
 import 'package:sankey_flutter/sankey_helpers.dart';
 import 'package:sankey_flutter/sankey_link.dart';
 import 'package:sankey_flutter/sankey_node.dart';

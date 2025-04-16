@@ -1,11 +1,9 @@
 // lib/sankey_helpers.dart
 
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:sankey_flutter/sankey.dart';
 import 'package:sankey_flutter/sankey_node.dart';
 import 'package:sankey_flutter/sankey_link.dart';
-import 'package:sankey_flutter/sankey_painter.dart';
 import 'package:sankey_flutter/interactive_sankey_painter.dart';
 
 /// Generates a configured [Sankey] layout engine
