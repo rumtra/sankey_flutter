@@ -1,0 +1,19 @@
+name: sankey_flutter
+description: A Flutter package for rendering beautiful and interactive Sankey diagrams.
+version: 0.0.1
+homepage: https://github.com/yourusername/sankey_flutter
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  test: any
+
+flutter:
+  uses-material-design: true
+
