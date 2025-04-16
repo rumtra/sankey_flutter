@@ -1,0 +1,23 @@
+# Dart/Flutter specific
+.dart_tool/
+.packages
+.pub/
+build/
+pubspec.lock
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage
+coverage/

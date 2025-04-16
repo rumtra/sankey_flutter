@@ -70,22 +70,17 @@ This project is licensed under the `BSD-3-Clause` License.
 
 ## CONTRIBUTING.md
 
-```markdown
 ### Contributing to Sankey Flutter
 
-Thank you for your interest in contributing to Sankey Flutter! Your contributions help improve the package and benefit the entire Flutter community. 
+Thank you for your interest in contributing to Sankey Flutter! Your contributions help improve the package and benefit the entire Flutter community. The package strives to closely mirror the output of d3-sankey to ensure familiarity and reliability.
 
-d3-sankey Compatibility: The package strives to closely mirror the output of d3-sankey to ensure familiarity and reliability.
-
-Collaboration: We welcome all contributions—from code improvements to documentation fixes. Your help is appreciated in making this package production-grade!
+We welcome all contributions—from code improvements to documentation fixes.
 
 #### Golden Tests and Layout Tolerance
 
 This package uses fuzzy golden tests to validate the fidelity of the Sankey layout. The tests are designed to be resilient to minor floating-point differences.
 
-- **Fuzzy Golden Tests:** Tests compare computed node/link positions against known-good outputs (e.g., from [d3-sankey](https://github.com/d3/d3-sankey)).
-- **Tolerance:** Position values (`x`, `y`, `dx`, `dy`, `sy`, `ty`) are compared with a tolerance of ±1.0 units (or as set in the tests) to account for minor differences from floating-point rounding, layout relaxation, or iteration order.
-```
+---
 
 ## Getting Started
 * Fork the Repository: Start by forking the project on GitHub.
