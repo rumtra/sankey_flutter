@@ -110,7 +110,8 @@ Map<String, Color> generateDefaultNodeColorMap(List<SankeyNode> nodes) {
 /// the tap event in the canvas coordinate space
 int? detectTappedNode(List<SankeyNode> nodes, Offset tapPos) {
   for (var node in nodes) {
-    final rect = Rect.fromLTWH(node.x0, node.y0, node.x1 - node.x0, node.y1 - node.y0);
+    final rect =
+        Rect.fromLTWH(node.x0, node.y0, node.x1 - node.x0, node.y1 - node.y0);
     if (rect.contains(tapPos)) return node.id;
   }
   return null;
@@ -143,12 +144,14 @@ InteractiveSankeyPainter buildInteractiveSankeyPainter({
   required List<SankeyLink> links,
   required Map<String, Color> nodeColors,
   int? selectedNodeId,
+  final bool showLabels = true,
 }) {
   return InteractiveSankeyPainter(
     nodes: nodes,
     links: links,
     nodeColors: nodeColors,
     selectedNodeId: selectedNodeId,
+    showLabels: showLabels,
   );
 }
 
@@ -166,6 +169,7 @@ class SankeyDiagramWidget extends StatelessWidget {
   final int? selectedNodeId;
   final Function(int?)? onNodeTap;
   final Size size;
+  final bool showLabels;
 
   const SankeyDiagramWidget({
     Key? key,
@@ -174,6 +178,7 @@ class SankeyDiagramWidget extends StatelessWidget {
     this.selectedNodeId,
     this.onNodeTap,
     this.size = const Size(1000, 600),
+    this.showLabels = true,
   }) : super(key: key);
 
   @override
@@ -190,6 +195,7 @@ class SankeyDiagramWidget extends StatelessWidget {
           links: data.links,
           nodeColors: nodeColors,
           selectedNodeId: selectedNodeId,
+          showLabels: showLabels,
         ),
       ),
     );

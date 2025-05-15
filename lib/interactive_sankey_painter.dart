@@ -6,7 +6,7 @@ import 'package:sankey_flutter/sankey_node.dart';
 import 'package:sankey_flutter/sankey_painter.dart';
 
 /// A [SankeyPainter] subclass that adds interactivity:
-/// 
+///
 /// - Supports custom node colors per label
 /// - Highlights connected links when a node is selected
 /// - Applies hover/focus feedback with opacity and borders
@@ -22,8 +22,10 @@ class InteractiveSankeyPainter extends SankeyPainter {
     required List<SankeyLink> links,
     required this.nodeColors,
     this.selectedNodeId,
+    bool showLabels = true,
     Color linkColor = Colors.grey,
   }) : super(
+          showLabels: showLabels,
           nodes: nodes,
           links: links,
           nodeColor: Colors.blue, // fallback node color
@@ -65,7 +67,8 @@ class InteractiveSankeyPainter extends SankeyPainter {
     // --- Draw colored nodes and labels with selection borders ---
     for (SankeyNode node in nodes) {
       final color = nodeColors[node.label] ?? Colors.blue;
-      final rect = Rect.fromLTWH(node.x0, node.y0, node.x1 - node.x0, node.y1 - node.y0);
+      final rect =
+          Rect.fromLTWH(node.x0, node.y0, node.x1 - node.x0, node.y1 - node.y0);
       final isSelected = selectedNodeId != null && node.id == selectedNodeId;
 
       canvas.drawRect(rect, Paint()..color = color);
@@ -81,7 +84,7 @@ class InteractiveSankeyPainter extends SankeyPainter {
       final isDark = color.computeLuminance() < 0.05;
       final textColor = isDark ? Colors.white : Colors.black;
 
-      if (node.label != null) {
+      if (node.label != null && showLabels) {
         final textSpan = TextSpan(
           text: node.label,
           style: TextStyle(
@@ -101,14 +104,16 @@ class InteractiveSankeyPainter extends SankeyPainter {
         const margin = 6.0;
         final labelY = rect.top + (rect.height - textPainter.height) / 2;
         final labelOffsetRight = Offset(rect.right + margin, labelY);
-        final labelOffsetLeft = Offset(rect.left - margin - textPainter.width, labelY);
+        final labelOffsetLeft =
+            Offset(rect.left - margin - textPainter.width, labelY);
 
         // Automatically choose a side that fits within the canvas
-        final labelOffset = (rect.right + margin + textPainter.width <= size.width)
-            ? labelOffsetRight
-            : (rect.left - margin - textPainter.width >= 0)
-                ? labelOffsetLeft
-                : labelOffsetRight;
+        final labelOffset =
+            (rect.right + margin + textPainter.width <= size.width)
+                ? labelOffsetRight
+                : (rect.left - margin - textPainter.width >= 0)
+                    ? labelOffsetLeft
+                    : labelOffsetRight;
 
         textPainter.paint(canvas, labelOffset);
       }
