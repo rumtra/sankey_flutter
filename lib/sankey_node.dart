@@ -9,9 +9,9 @@ class SankeyNode {
   int index = 0;
   double value = 0.0;
   double? fixedValue;
-  int depth = 0;  // Distance from source
+  int depth = 0; // Distance from source
   int height = 0; // Distance to sink
-  int layer = 0;  // Horizontal column index
+  int layer = 0; // Horizontal column index
   double x0 = 0.0; // Left x
   double x1 = 0.0; // Right x
   double y0 = 0.0; // Top y

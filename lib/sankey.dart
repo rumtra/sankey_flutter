@@ -42,9 +42,9 @@ int sankeyCenter(SankeyNode node, int n) {
   if (node.targetLinks.isNotEmpty) return node.depth;
   if (node.sourceLinks.isNotEmpty)
     return (node.sourceLinks
-                .map((link) => (link.target as SankeyNode).depth)
-                .reduce(min)) -
-            1;
+            .map((link) => (link.target as SankeyNode).depth)
+            .reduce(min)) -
+        1;
   return 0;
 }
 
@@ -335,7 +335,8 @@ class Sankey {
   /// For each node (except those in the first column), adjusts the vertical position
   /// based on the weighted average of the positions of the nodes in the previous column
   /// Then, it resolves any collisions that result
-  void _relaxLeftToRight(List<List<SankeyNode>> columns, double alpha, double beta) {
+  void _relaxLeftToRight(
+      List<List<SankeyNode>> columns, double alpha, double beta) {
     for (int i = 1; i < columns.length; i++) {
       for (SankeyNode target in columns[i]) {
         double ySum = 0;
@@ -365,7 +366,8 @@ class Sankey {
   ///
   /// Adjusts the vertical positions for nodes in earlier columns based on their
   /// source nodes in later columns, then resolves collisions
-  void _relaxRightToLeft(List<List<SankeyNode>> columns, double alpha, double beta) {
+  void _relaxRightToLeft(
+      List<List<SankeyNode>> columns, double alpha, double beta) {
     for (int i = columns.length - 2; i >= 0; i--) {
       for (SankeyNode source in columns[i]) {
         double ySum = 0;
@@ -399,14 +401,17 @@ class Sankey {
   void _resolveCollisions(List<SankeyNode> column, double alpha) {
     if (column.isEmpty) return;
     int mid = column.length ~/ 2;
-    _resolveCollisionsBottomToTop(column, column[mid].y0 - nodePadding, mid - 1, alpha);
-    _resolveCollisionsTopToBottom(column, column[mid].y1 + nodePadding, mid + 1, alpha);
+    _resolveCollisionsBottomToTop(
+        column, column[mid].y0 - nodePadding, mid - 1, alpha);
+    _resolveCollisionsTopToBottom(
+        column, column[mid].y1 + nodePadding, mid + 1, alpha);
     _resolveCollisionsBottomToTop(column, y1, column.length - 1, alpha);
     _resolveCollisionsTopToBottom(column, y0, 0, alpha);
   }
 
   /// Adjusts node positions from top downwards to resolve collisions
-  void _resolveCollisionsTopToBottom(List<SankeyNode> column, double y, int startIndex, double alpha) {
+  void _resolveCollisionsTopToBottom(
+      List<SankeyNode> column, double y, int startIndex, double alpha) {
     for (int i = startIndex; i < column.length; i++) {
       SankeyNode node = column[i];
       double dy = (y - node.y0) * alpha;
@@ -419,7 +424,8 @@ class Sankey {
   }
 
   /// Adjusts node positions from bottom upwards to resolve collisions
-  void _resolveCollisionsBottomToTop(List<SankeyNode> column, double y, int startIndex, double alpha) {
+  void _resolveCollisionsBottomToTop(
+      List<SankeyNode> column, double y, int startIndex, double alpha) {
     for (int i = startIndex; i >= 0; i--) {
       SankeyNode node = column[i];
       double dy = (node.y1 - y) * alpha;
@@ -441,11 +447,13 @@ class Sankey {
   void _reorderNodeLinks(SankeyNode node) {
     if (linkSort == null) {
       node.sourceLinks.sort((a, b) {
-        int cmp = (a.target as SankeyNode).y0.compareTo((b.target as SankeyNode).y0);
+        int cmp =
+            (a.target as SankeyNode).y0.compareTo((b.target as SankeyNode).y0);
         return cmp != 0 ? cmp : a.index.compareTo(b.index);
       });
       node.targetLinks.sort((a, b) {
-        int cmp = (a.source as SankeyNode).y0.compareTo((b.source as SankeyNode).y0);
+        int cmp =
+            (a.source as SankeyNode).y0.compareTo((b.source as SankeyNode).y0);
         return cmp != 0 ? cmp : a.index.compareTo(b.index);
       });
     }
@@ -459,11 +467,15 @@ class Sankey {
     if (linkSort == null) {
       for (SankeyNode node in nodes) {
         node.sourceLinks.sort((a, b) {
-          int cmp = (a.target as SankeyNode).y0.compareTo((b.target as SankeyNode).y0);
+          int cmp = (a.target as SankeyNode)
+              .y0
+              .compareTo((b.target as SankeyNode).y0);
           return cmp != 0 ? cmp : a.index.compareTo(b.index);
         });
         node.targetLinks.sort((a, b) {
-          int cmp = (a.source as SankeyNode).y0.compareTo((b.source as SankeyNode).y0);
+          int cmp = (a.source as SankeyNode)
+              .y0
+              .compareTo((b.source as SankeyNode).y0);
           return cmp != 0 ? cmp : a.index.compareTo(b.index);
         });
       }

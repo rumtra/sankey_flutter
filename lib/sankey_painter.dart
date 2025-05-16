@@ -10,7 +10,7 @@ import 'sankey_link.dart';
 /// - Draws links between nodes using smooth cubic Bézier paths
 /// - Renders nodes as colored rectangles
 /// - Optionally draws labels for each node
-/// 
+///
 /// Extend this class (e.g., [InteractiveSankeyPainter]) for user-interaction features
 class SankeyPainter extends CustomPainter {
   /// List of Sankey nodes with layout geometry

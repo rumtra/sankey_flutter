@@ -12,4 +12,3 @@ class SankeyLink {
 
   SankeyLink({required this.source, required this.target, required this.value});
 }
-

@@ -56,13 +56,15 @@ void expectFuzzyEqual(
   double tolerance = 0.01,
 }) {
   expect(actual.length, expected.length,
-      reason: '$context length mismatch: ${actual.length} vs ${expected.length}');
+      reason:
+          '$context length mismatch: ${actual.length} vs ${expected.length}');
   for (int i = 0; i < actual.length; i++) {
     final a = actual[i];
     final b = expected[i];
     final matches = fuzzyEqual(a, b, tolerance: tolerance);
     expect(matches, isTrue,
-        reason: '$context[$i] mismatch\nActual: $a\nExpected: $b\nTolerance: ±$tolerance');
+        reason:
+            '$context[$i] mismatch\nActual: $a\nExpected: $b\nTolerance: ±$tolerance');
   }
 }
 

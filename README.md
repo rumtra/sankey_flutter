@@ -1,6 +1,6 @@
 # Sankey Flutter
 
-**Version:** 0.0.1
+**Version:** 0.0.2
 
 Sankey Flutter is a Flutter package for rendering beautiful and interactive Sankey diagrams. This package adapts the proven [d3-sankey](https://github.com/d3/d3-sankey) layout algorithm into Dart, so you can generate complex node-link diagrams with customizability and high performance directly in your Flutter apps.
 
