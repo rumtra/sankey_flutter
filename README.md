@@ -20,7 +20,7 @@ Add the following dependency to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  sankey_flutter: ^0.0.1
+  sankey_flutter: ^0.0.2
 ```
 
 Then, run:
