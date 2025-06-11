@@ -1,10 +1,10 @@
 // lib/sankey_helpers.dart
 
 import 'package:flutter/material.dart';
-import 'package:sankey_flutter/sankey.dart';
-import 'package:sankey_flutter/sankey_node.dart';
-import 'package:sankey_flutter/sankey_link.dart';
 import 'package:sankey_flutter/interactive_sankey_painter.dart';
+import 'package:sankey_flutter/sankey.dart';
+import 'package:sankey_flutter/sankey_link.dart';
+import 'package:sankey_flutter/sankey_node.dart';
 
 /// Generates a configured [Sankey] layout engine
 ///
@@ -37,55 +37,6 @@ Sankey generateSankeyLayout({
     ..y1 = height;
 }
 
-/// A default palette of 15 visually distinct colors for use in node theming
-///
-/// These colors can be automatically assigned to nodes if no custom color is provided
-const List<Color> defaultNodeColors = [
-  Colors.blue,
-  Colors.green,
-  Colors.purple,
-  Colors.deepOrange,
-  Colors.redAccent,
-  Colors.indigoAccent,
-  Colors.red,
-  Colors.teal,
-  Colors.indigo,
-  Colors.brown,
-  Colors.grey,
-  Colors.deepPurple,
-  Colors.pink,
-  Colors.amber,
-  Colors.lightBlue,
-];
-
-/// Utility class for managing node theming
-///
-/// This class provides methods to retrieve a node's color and contrast text color
-/// based on its label. If a custom color is not specified in [nodeColors], a color
-/// from [defaultNodeColors] is chosen based on a hash of the node's label
-class SankeyNodeThemeManager {
-  final Map<String, Color> nodeColors;
-
-  SankeyNodeThemeManager(this.nodeColors);
-
-  /// Returns the color associated with the given [label]
-  ///
-  /// If no custom color is defined for [label], it selects a default color
-  /// from [defaultNodeColors] using a hash
-  Color getColor(String label) {
-    return nodeColors[label] ??
-        defaultNodeColors[label.hashCode % defaultNodeColors.length];
-  }
-
-  /// Returns an appropriate text color (white or black) for the background color
-  /// assigned to the given [label] to ensure legible contrast
-  Color getTextColor(String label) {
-    final background = getColor(label);
-    final isDark = background.computeLuminance() < 0.05;
-    return isDark ? Colors.white : Colors.black;
-  }
-}
-
 /// Generates a default node color map for a list of [SankeyNode] objects
 ///
 /// Each node's [label] is used to assign a color from [defaultNodeColors] in sequence
@@ -93,12 +44,15 @@ class SankeyNodeThemeManager {
 /// custom node colors are provided
 ///
 /// Returns a [Map] with the node label as key and the assigned [Color] as value
-Map<String, Color> generateDefaultNodeColorMap(List<SankeyNode> nodes) {
+Map<String, Color> generateDefaultNodeColorMap({
+  required List<SankeyNode> nodes,
+  required List<Color> colors,
+}) {
   final Map<String, Color> colorMap = {};
   for (int i = 0; i < nodes.length; i++) {
-    final label = nodes[i].label;
-    if (label != null && !colorMap.containsKey(label)) {
-      colorMap[label] = defaultNodeColors[i % defaultNodeColors.length];
+    final id = '${nodes[i].id}';
+    if (!colorMap.containsKey(id)) {
+      colorMap[id] = colors[i % colors.length];
     }
   }
   return colorMap;
@@ -110,8 +64,12 @@ Map<String, Color> generateDefaultNodeColorMap(List<SankeyNode> nodes) {
 /// the tap event in the canvas coordinate space
 int? detectTappedNode(List<SankeyNode> nodes, Offset tapPos) {
   for (var node in nodes) {
-    final rect =
-        Rect.fromLTWH(node.x0, node.y0, node.x1 - node.x0, node.y1 - node.y0);
+    final rect = Rect.fromLTWH(
+      node.x0,
+      node.y0,
+      node.x1 - node.x0,
+      node.y1 - node.y0,
+    );
     if (rect.contains(tapPos)) return node.id;
   }
   return null;
@@ -126,7 +84,7 @@ class SankeyDataSet {
   final List<SankeyNode> nodes;
   final List<SankeyLink> links;
 
-  SankeyDataSet({required this.nodes, required this.links});
+  const SankeyDataSet({required this.nodes, required this.links});
 
   /// Computes the layout for the nodes and links using the provided [sankey] generator.
   void layout(Sankey sankey) {
@@ -134,26 +92,7 @@ class SankeyDataSet {
   }
 }
 
-/// Builds an interactive painter based on the provided nodes, links, and node colors
-///
-/// The [selectedNodeId] parameter indicates an optional node ID for which
-/// special highlighting may be applied.
-/// Returns an instance of [InteractiveSankeyPainter].
-InteractiveSankeyPainter buildInteractiveSankeyPainter({
-  required List<SankeyNode> nodes,
-  required List<SankeyLink> links,
-  required Map<String, Color> nodeColors,
-  int? selectedNodeId,
-  final bool showLabels = true,
-}) {
-  return InteractiveSankeyPainter(
-    nodes: nodes,
-    links: links,
-    nodeColors: nodeColors,
-    selectedNodeId: selectedNodeId,
-    showLabels: showLabels,
-  );
-}
+enum LinkColorSource { source, target }
 
 /// A widget that wraps an interactive Sankey diagram
 ///
@@ -163,39 +102,68 @@ InteractiveSankeyPainter buildInteractiveSankeyPainter({
 /// callback [onNodeTap] which is called when a node is tapped
 ///
 /// The [size] parameter specifies the drawing area for the diagram
-class SankeyDiagramWidget extends StatelessWidget {
+class SankeyDiagramWidget extends StatefulWidget {
   final SankeyDataSet data;
   final Map<String, Color> nodeColors;
-  final int? selectedNodeId;
   final Function(int?)? onNodeTap;
   final Size size;
   final bool showLabels;
+  final double linkOpacity;
+  final LinkColorSource linkColorSource;
 
   const SankeyDiagramWidget({
-    Key? key,
+    super.key,
     required this.data,
     required this.nodeColors,
-    this.selectedNodeId,
     this.onNodeTap,
     this.size = const Size(1000, 600),
     this.showLabels = true,
-  }) : super(key: key);
+    this.linkOpacity = 0.1,
+    this.linkColorSource = LinkColorSource.source,
+  });
+
+  @override
+  State<SankeyDiagramWidget> createState() => _SankeyDiagramWidgetState();
+}
+
+class _SankeyDiagramWidgetState extends State<SankeyDiagramWidget> {
+  int? selectedNodeId;
+  SankeyLink? selectedLink;
+
+  void _handleNodeTap(int? nodeId) {
+    setState(() {
+      selectedNodeId = switch (selectedNodeId == nodeId) {
+        true => null,
+        false => nodeId,
+      };
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTapDown: (details) {
-        final tapped = detectTappedNode(data.nodes, details.localPosition);
-        if (onNodeTap != null) onNodeTap!(tapped);
+        if (widget.onNodeTap == null) {
+          return;
+        }
+        final tapped = detectTappedNode(
+          widget.data.nodes,
+          details.localPosition,
+        );
+        _handleNodeTap(tapped);
+        widget.onNodeTap?.call(tapped);
       },
       child: CustomPaint(
-        size: size,
-        painter: buildInteractiveSankeyPainter(
-          nodes: data.nodes,
-          links: data.links,
-          nodeColors: nodeColors,
+        size: widget.size,
+        painter: InteractiveSankeyPainter(
+          nodes: widget.data.nodes,
+          links: widget.data.links,
+          nodeColors: widget.nodeColors,
           selectedNodeId: selectedNodeId,
-          showLabels: showLabels,
+          showLabels: widget.showLabels,
+          linkColorSource: widget.linkColorSource,
+          linkOpacity: widget.linkOpacity,
         ),
       ),
     );

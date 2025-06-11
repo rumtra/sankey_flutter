@@ -17,6 +17,8 @@ void main() {
 /// It sets the app title, theme, and uses a [Scaffold] to provide an app bar and a body
 /// that renders the Sankey diagram
 class SankeyComplexExampleApp extends StatelessWidget {
+  const SankeyComplexExampleApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,8 +36,10 @@ class SankeyComplexExampleApp extends StatelessWidget {
 /// This widget builds a Sankey diagram using data defined in the [initState] method
 /// It also handles user tap interactions to select nodes
 class SankeyComplexDiagramWidget extends StatefulWidget {
+  const SankeyComplexDiagramWidget({super.key});
+
   @override
-  _SankeyComplexDiagramWidgetState createState() =>
+  State<SankeyComplexDiagramWidget> createState() =>
       _SankeyComplexDiagramWidgetState();
 }
 
@@ -48,8 +52,29 @@ class _SankeyComplexDiagramWidgetState
   late List<SankeyNode> nodes;
   late List<SankeyLink> links;
   late Map<String, Color> nodeColors;
-  int? selectedNodeId;
   late SankeyDataSet sankeyDataSet;
+  TextSpan label(String text) {
+    return TextSpan(
+      children: [
+        TextSpan(
+          text: '$text\n',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        TextSpan(
+          text: 'Tap to select',
+          style: TextStyle(
+            fontSize: 10,
+            color: Colors.black,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   void initState() {
@@ -57,21 +82,21 @@ class _SankeyComplexDiagramWidgetState
 
     // Define the list of nodes across multiple layers
     nodes = [
-      SankeyNode(id: 0, label: 'Salary'),
-      SankeyNode(id: 1, label: 'Freelance'),
-      SankeyNode(id: 2, label: 'Investments'),
-      SankeyNode(id: 3, label: 'Total Income'),
-      SankeyNode(id: 13, label: 'Mandatory Expenses'),
-      SankeyNode(id: 14, label: 'Discretionary Expenses'),
-      SankeyNode(id: 4, label: 'Taxes'),
-      SankeyNode(id: 5, label: 'Essentials'),
-      SankeyNode(id: 6, label: 'Discretionary'),
-      SankeyNode(id: 7, label: 'Savings'),
-      SankeyNode(id: 8, label: 'Debt'),
-      SankeyNode(id: 9, label: 'Investments Reinvested'),
-      SankeyNode(id: 10, label: 'Healthcare'),
-      SankeyNode(id: 11, label: 'Education'),
-      SankeyNode(id: 12, label: 'Donations'),
+      SankeyNode(id: 0, textSpan: label('Salary')),
+      SankeyNode(id: 1, textSpan: label('Freelance')),
+      SankeyNode(id: 2, textSpan: label('Investments')),
+      SankeyNode(id: 3, textSpan: label('Total Income')),
+      SankeyNode(id: 13, textSpan: label('Mandatory Expenses')),
+      SankeyNode(id: 14, textSpan: label('Discretionary Expenses')),
+      SankeyNode(id: 4, textSpan: label('Taxes')),
+      SankeyNode(id: 5, textSpan: label('Essentials')),
+      SankeyNode(id: 6, textSpan: label('Discretionary')),
+      SankeyNode(id: 7, textSpan: label('Savings')),
+      SankeyNode(id: 8, textSpan: label('Debt')),
+      SankeyNode(id: 9, textSpan: label('Investments Reinvested')),
+      SankeyNode(id: 10, textSpan: label('Healthcare')),
+      SankeyNode(id: 11, textSpan: label('Education')),
+      SankeyNode(id: 12, textSpan: label('Donations')),
     ];
 
     // Define the links between nodes with specified flow values
@@ -92,16 +117,34 @@ class _SankeyComplexDiagramWidgetState
       SankeyLink(source: nodes[14], target: nodes[12], value: 1),
     ];
 
+    final colors = [
+      Colors.red,
+      Colors.blue,
+      Colors.green,
+      Colors.orange,
+      Colors.purple,
+      Colors.yellow,
+      Colors.cyan,
+      Colors.brown,
+      Colors.teal,
+      Colors.indigo,
+      Colors.pink,
+      Colors.grey,
+      Colors.lime,
+      Colors.amber,
+      Colors.deepOrange,
+    ];
+
     // Automatically generate a color map for the nodes using their labels
-    nodeColors = generateDefaultNodeColorMap(nodes);
+    nodeColors = generateDefaultNodeColorMap(nodes: nodes, colors: colors);
 
     // Combine the nodes and links into a data set
     sankeyDataSet = SankeyDataSet(nodes: nodes, links: links);
 
     // Generate the layout using a helper that configures the layout engine
     final sankey = generateSankeyLayout(
-      width: 1000,
-      height: 600,
+      width: 600,
+      height: 400,
       nodeWidth: 20,
       nodePadding: 15,
     );
@@ -112,23 +155,18 @@ class _SankeyComplexDiagramWidgetState
   ///
   /// When a node is tapped, its [id] is stored in [selectedNodeId],
   /// triggering a rebuild that highlights the node
-  void _handleNodeTap(int? nodeId) {
-    setState(() {
-      selectedNodeId = nodeId;
-    });
-  }
+  void _handleNodeTap(int? nodeId) {}
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(32),
         child: SankeyDiagramWidget(
           data: sankeyDataSet,
           nodeColors: nodeColors,
-          selectedNodeId: selectedNodeId,
           onNodeTap: _handleNodeTap,
-          size: const Size(1000, 600),
-          showLabels: false,
+          showLabels: true,
         ),
       ),
     );

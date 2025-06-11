@@ -1,11 +1,13 @@
 // lib/sankey_node.dart
 
+import 'package:flutter/widgets.dart';
+
 import 'sankey_link.dart';
 
 /// A node in the Sankey diagram.
 class SankeyNode {
   final dynamic id;
-  String? label;
+  TextSpan? textSpan;
   int index = 0;
   double value = 0.0;
   double? fixedValue;
@@ -19,5 +21,8 @@ class SankeyNode {
   List<SankeyLink> sourceLinks = [];
   List<SankeyLink> targetLinks = [];
 
-  SankeyNode({required this.id, this.label});
+  SankeyNode({
+    required this.id,
+    this.textSpan,
+  });
 }

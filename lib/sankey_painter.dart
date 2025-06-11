@@ -1,8 +1,10 @@
 // lib/sankey_painter.dart
 
 import 'package:flutter/material.dart';
-import 'sankey_node.dart';
+import 'package:sankey_flutter/sankey_helpers.dart';
+
 import 'sankey_link.dart';
+import 'sankey_node.dart';
 
 /// A base [CustomPainter] for rendering a non-interactive Sankey diagram
 ///
@@ -28,12 +30,19 @@ class SankeyPainter extends CustomPainter {
   /// Whether to display node labels beside the nodes
   final bool showLabels;
 
-  SankeyPainter({
+  final double linkOpacity;
+  final double selectedLinkOpacity;
+  final LinkColorSource linkColorSource;
+
+  const SankeyPainter({
     required this.nodes,
     required this.links,
     this.nodeColor = Colors.blue,
     this.linkColor = Colors.grey,
     this.showLabels = true,
+    this.linkOpacity = 0.1,
+    this.selectedLinkOpacity = 0.5,
+    this.linkColorSource = LinkColorSource.source,
   });
 
   @override
@@ -49,10 +58,8 @@ class SankeyPainter extends CustomPainter {
       path.moveTo(source.x1, link.y0);
       path.cubicTo(xMid, link.y0, xMid, link.y1, target.x0, link.y1);
 
-      final blendedColor = Color.lerp(Colors.transparent, linkColor, 0.5)!;
-
       final paint = Paint()
-        ..color = blendedColor.withOpacity(0.5)
+        ..color = linkColor.withValues(alpha: linkOpacity)
         ..style = PaintingStyle.stroke
         ..strokeWidth = link.width;
 
@@ -71,17 +78,9 @@ class SankeyPainter extends CustomPainter {
       final paint = Paint()..color = nodeColor;
       canvas.drawRect(rect, paint);
 
-      if (showLabels && node.label != null) {
-        final textSpan = TextSpan(
-          text: node.label,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-          ),
-        );
+      if (showLabels && node.textSpan != null) {
         final textPainter = TextPainter(
-          text: textSpan,
+          text: node.textSpan!,
           textAlign: TextAlign.left,
           textDirection: TextDirection.ltr,
         )..layout();

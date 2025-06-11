@@ -2,8 +2,8 @@
 
 import 'dart:math';
 
-import 'sankey_node.dart';
 import 'sankey_link.dart';
+import 'sankey_node.dart';
 
 /// Signature for an alignment function, used to compute the horizontal
 /// placement of a node. It takes a [SankeyNode] and the total number of columns
@@ -40,11 +40,12 @@ int sankeyJustify(SankeyNode node, int n) =>
 /// This function mimics d3‑sankey's "center" alignment
 int sankeyCenter(SankeyNode node, int n) {
   if (node.targetLinks.isNotEmpty) return node.depth;
-  if (node.sourceLinks.isNotEmpty)
+  if (node.sourceLinks.isNotEmpty) {
     return (node.sourceLinks
             .map((link) => (link.target as SankeyNode).depth)
             .reduce(min)) -
         1;
+  }
   return 0;
 }
 
@@ -158,10 +159,14 @@ class Sankey {
       if (node.fixedValue != null) {
         node.value = node.fixedValue!;
       } else {
-        double sumSource =
-            node.sourceLinks.fold(0.0, (prev, link) => prev + link.value);
-        double sumTarget =
-            node.targetLinks.fold(0.0, (prev, link) => prev + link.value);
+        double sumSource = node.sourceLinks.fold(
+          0.0,
+          (prev, link) => prev + link.value,
+        );
+        double sumTarget = node.targetLinks.fold(
+          0.0,
+          (prev, link) => prev + link.value,
+        );
         node.value = max(sumSource, sumTarget);
       }
     }
@@ -336,7 +341,10 @@ class Sankey {
   /// based on the weighted average of the positions of the nodes in the previous column
   /// Then, it resolves any collisions that result
   void _relaxLeftToRight(
-      List<List<SankeyNode>> columns, double alpha, double beta) {
+    List<List<SankeyNode>> columns,
+    double alpha,
+    double beta,
+  ) {
     for (int i = 1; i < columns.length; i++) {
       for (SankeyNode target in columns[i]) {
         double ySum = 0;
@@ -367,7 +375,10 @@ class Sankey {
   /// Adjusts the vertical positions for nodes in earlier columns based on their
   /// source nodes in later columns, then resolves collisions
   void _relaxRightToLeft(
-      List<List<SankeyNode>> columns, double alpha, double beta) {
+    List<List<SankeyNode>> columns,
+    double alpha,
+    double beta,
+  ) {
     for (int i = columns.length - 2; i >= 0; i--) {
       for (SankeyNode source in columns[i]) {
         double ySum = 0;
@@ -402,16 +413,28 @@ class Sankey {
     if (column.isEmpty) return;
     int mid = column.length ~/ 2;
     _resolveCollisionsBottomToTop(
-        column, column[mid].y0 - nodePadding, mid - 1, alpha);
+      column,
+      column[mid].y0 - nodePadding,
+      mid - 1,
+      alpha,
+    );
     _resolveCollisionsTopToBottom(
-        column, column[mid].y1 + nodePadding, mid + 1, alpha);
+      column,
+      column[mid].y1 + nodePadding,
+      mid + 1,
+      alpha,
+    );
     _resolveCollisionsBottomToTop(column, y1, column.length - 1, alpha);
     _resolveCollisionsTopToBottom(column, y0, 0, alpha);
   }
 
   /// Adjusts node positions from top downwards to resolve collisions
   void _resolveCollisionsTopToBottom(
-      List<SankeyNode> column, double y, int startIndex, double alpha) {
+    List<SankeyNode> column,
+    double y,
+    int startIndex,
+    double alpha,
+  ) {
     for (int i = startIndex; i < column.length; i++) {
       SankeyNode node = column[i];
       double dy = (y - node.y0) * alpha;
@@ -425,7 +448,11 @@ class Sankey {
 
   /// Adjusts node positions from bottom upwards to resolve collisions
   void _resolveCollisionsBottomToTop(
-      List<SankeyNode> column, double y, int startIndex, double alpha) {
+    List<SankeyNode> column,
+    double y,
+    int startIndex,
+    double alpha,
+  ) {
     for (int i = startIndex; i >= 0; i--) {
       SankeyNode node = column[i];
       double dy = (node.y1 - y) * alpha;
@@ -447,13 +474,15 @@ class Sankey {
   void _reorderNodeLinks(SankeyNode node) {
     if (linkSort == null) {
       node.sourceLinks.sort((a, b) {
-        int cmp =
-            (a.target as SankeyNode).y0.compareTo((b.target as SankeyNode).y0);
+        int cmp = (a.target as SankeyNode).y0.compareTo(
+          (b.target as SankeyNode).y0,
+        );
         return cmp != 0 ? cmp : a.index.compareTo(b.index);
       });
       node.targetLinks.sort((a, b) {
-        int cmp =
-            (a.source as SankeyNode).y0.compareTo((b.source as SankeyNode).y0);
+        int cmp = (a.source as SankeyNode).y0.compareTo(
+          (b.source as SankeyNode).y0,
+        );
         return cmp != 0 ? cmp : a.index.compareTo(b.index);
       });
     }
@@ -467,15 +496,15 @@ class Sankey {
     if (linkSort == null) {
       for (SankeyNode node in nodes) {
         node.sourceLinks.sort((a, b) {
-          int cmp = (a.target as SankeyNode)
-              .y0
-              .compareTo((b.target as SankeyNode).y0);
+          int cmp = (a.target as SankeyNode).y0.compareTo(
+            (b.target as SankeyNode).y0,
+          );
           return cmp != 0 ? cmp : a.index.compareTo(b.index);
         });
         node.targetLinks.sort((a, b) {
-          int cmp = (a.source as SankeyNode)
-              .y0
-              .compareTo((b.source as SankeyNode).y0);
+          int cmp = (a.source as SankeyNode).y0.compareTo(
+            (b.source as SankeyNode).y0,
+          );
           return cmp != 0 ? cmp : a.index.compareTo(b.index);
         });
       }
@@ -534,5 +563,5 @@ class SankeyGraph {
   /// The list of Sankey links with computed geometries
   final List<SankeyLink> links;
 
-  SankeyGraph({required this.nodes, required this.links});
+  const SankeyGraph({required this.nodes, required this.links});
 }
