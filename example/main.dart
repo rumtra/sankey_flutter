@@ -143,8 +143,8 @@ class _SankeyComplexDiagramWidgetState
 
     // Generate the layout using a helper that configures the layout engine
     final sankey = generateSankeyLayout(
-      width: 600,
-      height: 400,
+      width: 800,
+      height: 500,
       nodeWidth: 20,
       nodePadding: 15,
     );

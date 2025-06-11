@@ -95,10 +95,14 @@ class InteractiveSankeyPainter extends SankeyPainter {
         final textPainter = TextPainter(
           text: node.textSpan!,
           textDirection: TextDirection.ltr,
+          textAlign: switch (_isRightmostNode(node)) {
+            true => TextAlign.right,
+            false => TextAlign.left,
+          },
         );
         textPainter.layout(minWidth: 0, maxWidth: size.width);
 
-        const margin = 6.0;
+        const margin = 4.0;
         final labelY = rect.top + (rect.height - textPainter.height) / 2;
         final labelOffsetRight = Offset(rect.right + margin, labelY);
         final labelOffsetLeft = Offset(
@@ -107,16 +111,23 @@ class InteractiveSankeyPainter extends SankeyPainter {
         );
 
         // Automatically choose a side that fits within the canvas
-        final labelOffset =
-            (rect.right + margin + textPainter.width <= size.width)
-            ? labelOffsetRight
-            : (rect.left - margin - textPainter.width >= 0)
-            ? labelOffsetLeft
-            : labelOffsetRight;
+        final fitsRight = rect.right + margin + textPainter.width <= size.width;
+        final fitsLeft = rect.left - margin - textPainter.width >= 0;
+        final isRightPreferred = fitsRight || !fitsLeft;
+
+        final labelOffset = switch (isRightPreferred) {
+          true => labelOffsetRight,
+          false => labelOffsetLeft,
+        };
 
         textPainter.paint(canvas, labelOffset);
       }
     }
+  }
+
+  bool _isRightmostNode(SankeyNode node) {
+    final maxX1 = nodes.map((n) => n.x1).reduce((a, b) => a > b ? a : b);
+    return node.x1 == maxX1;
   }
 
   @override

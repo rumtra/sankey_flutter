@@ -81,11 +81,10 @@ class SankeyPainter extends CustomPainter {
       if (showLabels && node.textSpan != null) {
         final textPainter = TextPainter(
           text: node.textSpan!,
-          textAlign: TextAlign.left,
           textDirection: TextDirection.ltr,
         )..layout();
 
-        final labelX = node.x1 + 6;
+        final labelX = node.x1 + 4;
         final labelY = node.y0 + (node.y1 - node.y0 - textPainter.height) / 2;
         final labelOffset = Offset(labelX, labelY);
 
